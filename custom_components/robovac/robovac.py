@@ -49,7 +49,7 @@ ROBOVAC_SERIES = {
         "T2273",
     ],
     "L": ["T2181", "T2182", "T2190", "T2192", "T2193", "T2194"],
-    "X": ["T2261", "T2262", "T2320"],
+    "X": ["T2261", "T2262", "T2320", "T2266", "T2276"],
 }
 
 HAS_MAP_FEATURE = ["T2253", *ROBOVAC_SERIES["L"], *ROBOVAC_SERIES["X"]]
