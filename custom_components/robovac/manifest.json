@@ -10,6 +10,6 @@
     "integration_type": "device",
     "iot_class": "local_polling",
     "issue_tracker": "https://github.com/damacus/robovac/issues",
-    "requirements": [],
+    "requirements": ["tinytuya==1.12.0"],
     "version": "1.3.2"
 }
