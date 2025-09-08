@@ -46,10 +46,44 @@ class RoboVac(TuyaDevice):
             )
         current_model_details = ROBOVAC_MODELS[model_code]
 
+        # Check if this model has a custom device class
+        if hasattr(current_model_details, 'get_device_class'):
+            # Use custom device class (e.g., TinyTuya for T2276)
+            custom_device_class = current_model_details.get_device_class()
+            self._custom_device = custom_device_class(current_model_details, *args, **kwargs)
+            # Copy essential attributes
+            self.device_id = self._custom_device.device_id
+            self.host = self._custom_device.host
+            self.state = self._custom_device.state
+            self.version = self._custom_device.version
+            self.model_details = current_model_details
+            self.model_code = model_code
+            return
+
         super().__init__(current_model_details, *args, **kwargs)
 
         self.model_code = model_code
         self.model_details = current_model_details
+
+    async def async_get(self) -> None:
+        """Get the current state of the device."""
+        if hasattr(self, '_custom_device'):
+            # Use custom device for T2276
+            await self._custom_device.async_get()
+            self.state = self._custom_device.state
+        else:
+            # Use standard TuyaDevice for other models
+            await super().async_get()
+
+    async def async_set(self, dps: dict) -> None:
+        """Set device state."""
+        if hasattr(self, '_custom_device'):
+            # Use custom device for T2276
+            await self._custom_device.async_set(dps)
+            self.state = self._custom_device.state
+        else:
+            # Use standard TuyaDevice for other models
+            await super().async_set(dps)
 
     def getHomeAssistantFeatures(self) -> int:
         """Get the Home Assistant supported features for this vacuum model.
